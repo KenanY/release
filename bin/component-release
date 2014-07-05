@@ -119,7 +119,7 @@ function newVersion() {
       if (com && com.version != version) updating.push('component.json');
       if (npm && npm.version != version) updating.push('package.json');
 
-      rl.question("Update versions in " + updating.join(' and ') + " to " + version +"?(yes)", 
+      rl.question("Update versions in " + updating.join(' and ') + " to " + version +"?(yes)",
         function(answer) {
           rl.close();
           if (answer && answer != 'yes') {
@@ -149,12 +149,14 @@ function doUpdate() {
     process.exit(1);
   }
   var commands = [];
-  if (npm && npm.private != true) {
-    commands.push(['npm', ['publish']]);
-  }
+
   commands.push(['git', ['commit', '--allow-empty', '--all', '-m', 'Release ' + version]]);
   commands.push(['git', ['tag', version, '--annotate', '-m', version]]);
   commands.push(['git', ['push','--follow-tags']]);
+
+  if (npm && npm.private != true) {
+    commands.push(['npm', ['publish']]);
+  }
 
   var prom = Q.resolve();
   commands.forEach(function (command) {
