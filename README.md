@@ -1,6 +1,8 @@
 # component-release
 
-  Node.js based git-release for use with component and npm
+Personal fork of [ForbesLindesay/component-release][] which:
+
+  - Doesn't `npm publish` until after release is tagged
 
 ## Installation
 
@@ -26,3 +28,6 @@
   - `git commit -a -m "Release 0.0.0"`
   - `git tag 0.0.0 -a -m "0.0.0"`
   - `git push --follow-tags`
+
+
+   [ForbesLindesay/component-release]: https://github.com/ForbesLindesay/component-release
