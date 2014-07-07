@@ -6,7 +6,9 @@ Personal fork of [ForbesLindesay/component-release][] which:
 
 ## Installation
 
-    $ npm install component-release -g
+``` bash
+$ npm install -g KenanY/release
+```
 
 ## Usage
 
