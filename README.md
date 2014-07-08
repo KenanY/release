@@ -12,7 +12,9 @@ $ npm install -g KenanY/release
 
 ## Usage
 
-    $ component-release 0.0.0
+``` bash
+$ release 1.0.0
+```
 
 ## Features
 
