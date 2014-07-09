@@ -26,12 +26,12 @@ $ release 1.0.0
   - Won't let you publish an older version if a newer one exists (and is tagged)
   - won't let you publish if `component.json` or `package.json` exists but is not valid json.
 
-  Provided you meet the requirements it will:
+Provided you meet the requirements it will:
 
-  - if a package.json is present and not marked private: `npm publish`
   - `git commit -a -m "Release 0.0.0"`
   - `git tag 0.0.0 -a -m "0.0.0"`
   - `git push --follow-tags`
+  - if a package.json is present and not marked private: `npm publish`
 
 
    [ForbesLindesay/component-release]: https://github.com/ForbesLindesay/component-release
