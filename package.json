@@ -9,7 +9,7 @@
     "prepublish": "linify transform"
   },
   "repository": "https://github.com/KenanY/release.git",
-  "author": "",
+  "author": "Kenan Yildirim <kenan@kenany.me> (http://kenany.me/)",
   "license": "BSD",
   "dependencies": {
     "q": "~0.8",
