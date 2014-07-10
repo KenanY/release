@@ -12,9 +12,10 @@
   "author": "Kenan Yildirim <kenan@kenany.me> (http://kenany.me/)",
   "license": "MIT",
   "dependencies": {
+    "jsup": "^0.0.1",
     "q": "^1.0.1",
-    "win-spawn": "^2.0.0",
-    "jsup": "^0.0.1"
+    "semver": "^2.3.1",
+    "win-spawn": "^2.0.0"
   },
   "devDependencies": {
     "linify": "^1.0.1"

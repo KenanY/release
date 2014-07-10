@@ -5,6 +5,7 @@ var fs = require('fs');
 var jsup = require('jsup');
 var Q = require('q');
 var readline = require('readline');
+var semver = require('semver');
 var winSpawn = require('win-spawn');
 
 var exists = fs.existsSync;
@@ -67,22 +68,6 @@ function spawn(cmd, args, options) {
 var version = process.argv[2];
 
 /**
- * Check if SemVer `a` is greater than SemVer `b`.
- *
- * @param {String} a
- * @param {String} b
- * @return {Boolean}
- */
-function greaterThan(a, b) {
-  var regex = /^(\d+)\.(\d+)\.(\d+)$/;
-  a = regex.exec(a);
-  a = [+a[1], +a[2], +a[3]];
-  b = regex.exec(b);
-  b = [+b[1], +b[2], +b[3]];
-  return a[0] > b[0] || (a[0] == b[0] && (a[1] > b[1] || (a[1] == b[1] && a[2] > b[2])));
-}
-
-/**
  * Get the highest version tag. Calls `cb(error, version)`.
  *
  * @param {Function} cb
@@ -100,7 +85,7 @@ function getMaxVersion(cb) {
         v = v.trim();
         if (/^\d+\.\d+\.\d+$/.test(v)) {
           hasVersion = true;
-          if (greaterThan(v, max)) {
+          if (semver.gt(v, max)) {
             max = v;
           }
         }
@@ -117,7 +102,7 @@ if (/^\d+\.\d+\.\d+$/.test(version)) {
     if (err) {
       throw err;
     }
-    if (max && (greaterThan(max, version) || max === version)) {
+    if (max && (semver.gt(max, version) || max === version)) {
       console.error('Can\'t create version ' + version + ' because version ' + max + ' already exists.');
       process.exit(1);
     }
@@ -141,13 +126,13 @@ else {
 
 function newVersion() {
   if (com && com.version !== version) {
-    if (npm && npm.version === version && greaterThan(npm.version, com.version)) {
+    if (npm && npm.version === version && semver.gt(npm.version, com.version)) {
       editJSON('./component.json', 'version', version);
       com.version = version;
     }
   }
   if (npm && npm.version != version) {
-    if (com && com.version === version && greaterThan(com.version, npm.version)) {
+    if (com && com.version === version && semver.gt(com.version, npm.version)) {
       editJSON('./package.json', 'version', version);
       npm.version = version;
     }
