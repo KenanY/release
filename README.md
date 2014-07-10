@@ -3,6 +3,7 @@
 Personal fork of [ForbesLindesay/component-release][] which:
 
   - Doesn't `npm publish` until after release is tagged
+  - GPG-signs tags
 
 ## Installation
 
@@ -29,7 +30,7 @@ $ release 1.0.0
 Provided you meet the requirements it will:
 
   - `git commit -a -m "Release 0.0.0"`
-  - `git tag 0.0.0 -a -m "0.0.0"`
+  - `git tag -s 0.0.0 -m "0.0.0"`
   - `git push --follow-tags`
   - if a package.json is present and not marked private: `npm publish`
 

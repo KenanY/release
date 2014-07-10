@@ -151,7 +151,7 @@ function doUpdate() {
   var commands = [];
 
   commands.push(['git', ['commit', '--allow-empty', '--all', '-m', 'Release ' + version]]);
-  commands.push(['git', ['tag', version, '--annotate', '-m', version]]);
+  commands.push(['git', ['tag', '-s', version, '-m', version]]);
   commands.push(['git', ['push','--follow-tags']]);
 
   if (npm && npm.private != true) {
