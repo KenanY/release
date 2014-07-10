@@ -1,15 +1,20 @@
 #!/usr/bin/env node
 
-var Q = require('q');
 var fs = require('fs');
 var jsup = require('jsup');
+var Q = require('q');
+var readline = require('readline');
+var winSpawn = require('win-spawn');
 
 var exists = fs.existsSync;
 
 function readJSON(name) {
-  if (!exists(name)) return null;
-  else return JSON.parse(fs.readFileSync(name).toString().trim());
+  if (!exists(name)) {
+    return null;
+  }
+  return JSON.parse(fs.readFileSync(name).toString().trim());
 }
+
 function editJSON(name, prop, value) {
   try {
     var dat = jsup(fs.readFileSync(name).toString().trim());
@@ -22,13 +27,16 @@ function editJSON(name, prop, value) {
   }
 }
 
-var winSpawn = require('win-spawn');
 function spawn(cmd, args, options) {
   var def = Q.defer();
   var proc = winSpawn(cmd, args, options);
   proc.on('exit', function (code) {
-    if (code !== 0) def.reject(new Error(cmd + ' exited with code ' + code));
-    else def.resolve(null);
+    if (code !== 0) {
+      def.reject(new Error(cmd + ' exited with code ' + code));
+    }
+    else {
+      def.resolve(null);
+    }
   });
   return def.promise;
 }
@@ -43,14 +51,17 @@ function greaterThan(a, b) {
   b = [+b[1], +b[2], +b[3]];
   return a[0] > b[0] || (a[0] == b[0] && (a[1] > b[1] || (a[1] == b[1] && a[2] > b[2])));
 }
+
 function getMaxVersion(cb) {
-  require('child_process').exec('git tag', function (err, res) {
-    if (err) return cb(err);
+  require('child_process').exec('git tag', function(err, res) {
+    if (err) {
+      return cb(err);
+    }
     var max = '0.0.0';
     var hasVersion = false;
     res.toString()
       .split('\n')
-      .forEach(function (v) {
+      .forEach(function(v) {
         v = v.trim();
         if (/^\d+\.\d+\.\d+$/.test(v)) {
           hasVersion = true;
@@ -62,25 +73,33 @@ function getMaxVersion(cb) {
     cb(null, hasVersion ? max : null);
   });
 }
+
 var com = readJSON('./component.json');
 var npm = readJSON('./package.json');
 
 if (/^\d+\.\d+\.\d+$/.test(version)) {
-  getMaxVersion(function (err, max) {
-    if (err) throw err;
+  getMaxVersion(function(err, max) {
+    if (err) {
+      throw err;
+    }
     if (max && (greaterThan(max, version) || max == version)) {
       console.error('Can\'t create version ' + version + ' because version ' + max + ' already exists.');
       process.exit(1);
-    } else {
+    }
+    else {
       newVersion();
     }
   });
-} else if (version) {
+}
+else if (version) {
   console.error(version + ' does not match the expression `/^\\d+\\.\\d+\\.\\d+$/`');
   process.exit(1);
-} else {
-  getMaxVersion(function (err, max) {
-    if (err) throw err;
+}
+else {
+  getMaxVersion(function(err, max) {
+    if (err) {
+      throw err;
+    }
     console.log('The current max-version is ' + max);
   });
 }
@@ -107,25 +126,24 @@ function newVersion() {
   if (!((com && com.version > version) || (npm && npm.version > version))) {
     if (!((com && com.version != version)||(npm && npm.version != version))) {
       doUpdate();
-    } else {
-      var readline = require('readline');
-
+    }
+    else {
       var rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
       });
 
       var updating = [];
-      if (com && com.version != version) updating.push('component.json');
-      if (npm && npm.version != version) updating.push('package.json');
+      if (com && com.version !== version) updating.push('component.json');
+      if (npm && npm.version !== version) updating.push('package.json');
 
       rl.question("Update versions in " + updating.join(' and ') + " to " + version +"?(yes)",
         function(answer) {
           rl.close();
-          if (answer && answer != 'yes') {
+          if (answer && answer !== 'yes') {
             console.error('Versions were out of date');
           } else {
-            updating.forEach(function (name) {
+            updating.forEach(function(name) {
               editJSON('./' + name, 'version', version);
             });
             if (npm) npm.version = version;
@@ -139,13 +157,13 @@ function newVersion() {
   }
 }
 function doUpdate() {
-  if (com && com.version != version) {
+  if (com && com.version !== version) {
     console.error('component.json must have the correct version');
   }
-  if (npm && npm.version != version) {
+  if (npm && npm.version !== version) {
     console.error('package.json must have the correct version');
   }
-  if ((com && com.version != version) || (npm && npm.version != version)) {
+  if ((com && com.version !== version) || (npm && npm.version !== version)) {
     process.exit(1);
   }
   var commands = [];
@@ -154,13 +172,13 @@ function doUpdate() {
   commands.push(['git', ['tag', '-s', version, '-m', version]]);
   commands.push(['git', ['push','--follow-tags']]);
 
-  if (npm && npm.private != true) {
+  if (npm && !npm.private) {
     commands.push(['npm', ['publish']]);
   }
 
   var prom = Q.resolve();
-  commands.forEach(function (command) {
-    prom = prom.then(function () {
+  commands.forEach(function(command) {
+    prom = prom.then(function() {
       console.log('\n\nexec: ' + command[0] + ' ' + command[1].join(' ') + '\n\n');
       return spawn(command[0], command[1], {stdio: 'inherit'});
     });
