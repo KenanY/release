@@ -1,4 +1,4 @@
-# component-release
+# release
 
 Personal fork of [ForbesLindesay/component-release][] which:
 
