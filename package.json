@@ -1,7 +1,7 @@
 {
   "name": "component-release",
   "version": "3.0.0",
-  "description": "Node.js based git-release for use with component",
+  "description": "Personal fork of ForbesLindesay/component-release",
   "bin": {
     "component-release": "./bin/component-release"
   },
