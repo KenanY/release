@@ -9,6 +9,12 @@ var winSpawn = require('win-spawn');
 
 var exists = fs.existsSync;
 
+/**
+ * Read and parse a JSON file named `name`.
+ *
+ * @param {String} name
+ * @return {Object} parsed JSON
+ */
 function readJSON(name) {
   if (!exists(name)) {
     return null;
@@ -16,6 +22,13 @@ function readJSON(name) {
   return JSON.parse(fs.readFileSync(name).toString().trim());
 }
 
+/**
+ * Change the value of property `prop` to `value` in a JSON file named `named.
+ *
+ * @param {String} name
+ * @param {String} prop
+ * @param {*} value
+ */
 function editJSON(name, prop, value) {
   try {
     var dat = jsup(fs.readFileSync(name).toString().trim());
@@ -28,10 +41,19 @@ function editJSON(name, prop, value) {
   }
 }
 
+/**
+ * Launch a new process with the given `cmd`, with command line arguments
+ * `args`.
+ *
+ * @param {String} cmd
+ * @param {Array} args
+ * @param {Object} options
+ * @return {Promise}
+ */
 function spawn(cmd, args, options) {
   var def = Q.defer();
   var proc = winSpawn(cmd, args, options);
-  proc.on('exit', function (code) {
+  proc.on('exit', function(code) {
     if (code !== 0) {
       def.reject(new Error(cmd + ' exited with code ' + code));
     }
@@ -44,6 +66,13 @@ function spawn(cmd, args, options) {
 
 var version = process.argv[2];
 
+/**
+ * Check if SemVer `a` is greater than SemVer `b`.
+ *
+ * @param {String} a
+ * @param {String} b
+ * @return {Boolean}
+ */
 function greaterThan(a, b) {
   var regex = /^(\d+)\.(\d+)\.(\d+)$/;
   a = regex.exec(a);
@@ -53,6 +82,11 @@ function greaterThan(a, b) {
   return a[0] > b[0] || (a[0] == b[0] && (a[1] > b[1] || (a[1] == b[1] && a[2] > b[2])));
 }
 
+/**
+ * Get the highest version tag. Calls `cb(error, version)`.
+ *
+ * @param {Function} cb
+ */
 function getMaxVersion(cb) {
   childProcess.exec('git tag', function(err, res) {
     if (err) {
@@ -83,7 +117,7 @@ if (/^\d+\.\d+\.\d+$/.test(version)) {
     if (err) {
       throw err;
     }
-    if (max && (greaterThan(max, version) || max == version)) {
+    if (max && (greaterThan(max, version) || max === version)) {
       console.error('Can\'t create version ' + version + ' because version ' + max + ' already exists.');
       process.exit(1);
     }
@@ -106,14 +140,14 @@ else {
 }
 
 function newVersion() {
-  if (com && com.version != version) {
-    if (npm && npm.version == version && greaterThan(npm.version, com.version)) {
+  if (com && com.version !== version) {
+    if (npm && npm.version === version && greaterThan(npm.version, com.version)) {
       editJSON('./component.json', 'version', version);
       com.version = version;
     }
   }
   if (npm && npm.version != version) {
-    if (com && com.version == version && greaterThan(com.version, npm.version)) {
+    if (com && com.version === version && greaterThan(com.version, npm.version)) {
       editJSON('./package.json', 'version', version);
       npm.version = version;
     }
@@ -125,7 +159,7 @@ function newVersion() {
     console.error('The version specified is less than the version in package.json');
   }
   if (!((com && com.version > version) || (npm && npm.version > version))) {
-    if (!((com && com.version != version)||(npm && npm.version != version))) {
+    if (!((com && com.version !== version)||(npm && npm.version !== version))) {
       doUpdate();
     }
     else {
@@ -138,22 +172,29 @@ function newVersion() {
       if (com && com.version !== version) updating.push('component.json');
       if (npm && npm.version !== version) updating.push('package.json');
 
-      rl.question("Update versions in " + updating.join(' and ') + " to " + version +"?(yes)",
+      rl.question('Update versions in ' + updating.join(' and ') + ' to ' + version +'? (yes)',
         function(answer) {
           rl.close();
           if (answer && answer !== 'yes') {
             console.error('Versions were out of date');
-          } else {
+          }
+          else {
             updating.forEach(function(name) {
               editJSON('./' + name, 'version', version);
             });
-            if (npm) npm.version = version;
-            if (com) com.version = version;
+            if (npm) {
+              npm.version = version;
+            }
+            if (com) {
+              com.version = version;
+            }
             doUpdate();
           }
-        });
+        }
+      );
     }
-  } else {
+  }
+  else {
     process.exit(1);
   }
 }
