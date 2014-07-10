@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var childProcess = require('child_process');
 var fs = require('fs');
 var jsup = require('jsup');
 var Q = require('q');
@@ -53,7 +54,7 @@ function greaterThan(a, b) {
 }
 
 function getMaxVersion(cb) {
-  require('child_process').exec('git tag', function(err, res) {
+  childProcess.exec('git tag', function(err, res) {
     if (err) {
       return cb(err);
     }
