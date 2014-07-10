@@ -12,9 +12,9 @@
   "author": "Kenan Yildirim <kenan@kenany.me> (http://kenany.me/)",
   "license": "BSD",
   "dependencies": {
-    "q": "~0.8",
-    "win-spawn": "0",
-    "jsup": "0.0.1"
+    "q": "^1.0.1",
+    "win-spawn": "^2.0.0",
+    "jsup": "^0.0.1"
   },
   "devDependencies": {
     "linify": "~1.0.1"
