@@ -8,10 +8,7 @@
   "scripts": {
     "prepublish": "linify transform"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ForbesLindesay/component-release.git"
-  },
+  "repository": "https://github.com/KenanY/release.git",
   "author": "",
   "license": "BSD",
   "dependencies": {
