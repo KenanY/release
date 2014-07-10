@@ -17,7 +17,7 @@
     "jsup": "^0.0.1"
   },
   "devDependencies": {
-    "linify": "~1.0.1"
+    "linify": "^1.0.1"
   },
   "private": true
 }

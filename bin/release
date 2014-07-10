@@ -156,6 +156,7 @@ function newVersion() {
     process.exit(1);
   }
 }
+
 function doUpdate() {
   if (com && com.version !== version) {
     console.error('component.json must have the correct version');
