@@ -10,7 +10,7 @@
   },
   "repository": "https://github.com/KenanY/release.git",
   "author": "Kenan Yildirim <kenan@kenany.me> (http://kenany.me/)",
-  "license": "BSD",
+  "license": "MIT",
   "dependencies": {
     "q": "^1.0.1",
     "win-spawn": "^2.0.0",
