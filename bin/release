@@ -196,7 +196,7 @@ function doUpdate() {
   }
   var commands = [];
 
-  commands.push(['git', ['commit', '-am', 'Release ' + version]]);
+  commands.push(['git', ['commit', '-S -am', 'Release ' + version]]);
   commands.push(['git', ['tag', '-s', version, '-m', version]]);
   commands.push(['git', ['push','--follow-tags']]);
 
