@@ -194,9 +194,11 @@ function doUpdate() {
   if ((com && com.version !== version) || (npm && npm.version !== version)) {
     process.exit(1);
   }
+
   var commands = [];
 
-  commands.push(['git', ['commit', '-S', '-am', 'Release ' + version]]);
+  commands.push(['git', ['add', 'package.json']]);
+  commands.push(['git', ['commit', '-S', '-m', 'Release ' + version]]);
   commands.push(['git', ['tag', '-s', version, '-m', version]]);
   commands.push(['git', ['push','--follow-tags']]);
 
